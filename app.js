@@ -1,12 +1,9 @@
-var express = require("express");
-var app = express();
+const express = require('express');
 
-var http = require("http").Server(app);
-app.set("view engine", "ejs");
-app.get("/", function (req, res) {
-    res.render("./googlemap.ejs");
-})
-http.listen("3000", () => {
-    console.log("Application started");
+const app = express();
+
+app.get('/', (req, res) => {
+  res.render('googlemap.ejs');
 });
 
+app.listen(3000);
