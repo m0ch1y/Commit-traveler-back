@@ -46,4 +46,13 @@ app.get('/userinfo', async (req, res) => {
     res.send(await seq.text())
   }
 });
+
+app.use(express.static("dist"));
+app.get("/", (req, res) => {
+    res.sendFile(__dirname + "/dist/index.html");
+})
+app.get("/testvue", (req, res) => {
+    res.sendFile(__dirname + "/testvue.html");
+})
+
 app.listen(3000, () => console.log('listening on port 3000'))
