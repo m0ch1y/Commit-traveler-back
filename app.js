@@ -35,24 +35,21 @@ app.get('/userinfo', async (req, res) => {
   if (!req.session.access_token) {
     res.redirect('/auth');
   } else {
-    const access_token = req.session.access_token;
-    const seq = await fetch(config.USER_URI, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': "token " + access_token
-      },
-    });
-    res.send(await seq.text())
+    res.send("vue.jsのページ")
   }
 });
 
 app.use(express.static("dist"));
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/dist/index.html");
+  res.sendFile(__dirname + "/dist/index.html");
 })
 app.get("/testvue", (req, res) => {
-    res.sendFile(__dirname + "/testvue.html");
+  res.sendFile(__dirname + "/testvue.html");
+})
+
+app.get("/testvue", (req, res) => {
+  const pre_commit_count = 
+  res.send();
 })
 
 app.listen(3000, () => console.log('listening on port 3000'))
