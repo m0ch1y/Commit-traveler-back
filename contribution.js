@@ -1,27 +1,28 @@
-const { graphql } = require("@octokit/graphql");
+let { graphql } = require("@octokit/graphql");
 const config = require('./config');
-const init = async ()=>{
-	const { repository } = await graphql(
-	`
-		{
-		repository(owner: "octokit", name: "graphql.js") {
-			issues(last: 3) {
-			edges {
-				node {
-				title
-				}
-			}
-			}
-		}
-		}
-	`,
-	{
-		headers: {
-		authorization: `token ${config.ACCESS_TOKEN}`,
-		},
-	}
-	);
-	console.log(repository.issues.edges);
-
+graphql = graphql.defaults({
+  headers: {
+    authorization: `token ${config.ACCESS_TOKEN_WEB}`,
+  },
+});
+const user_name = "kajikentaro";
+const QUERY = `
+{
+  user(login: "${user_name}") {
+    id
+    contributionsCollection {
+      totalCommitContributions
+    }
+  }
 }
-init();
+`;
+async function main() {
+  try {
+    const {user:{contributionsCollection:{totalCommitContributions}}} = await graphql(QUERY);
+    console.log(totalCommitContributions);
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+
+main();
