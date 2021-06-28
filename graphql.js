@@ -5,18 +5,18 @@ graphql = graphql.defaults({
     authorization: `token ${config.ACCESS_TOKEN_WEB}`,
   },
 });
-const user_name = "kajikentaro";
-const QUERY = `
-{
-  user(login: "${user_name}") {
-    id
-    contributionsCollection {
-      totalCommitContributions
+
+const getCommitCount = async (user_name)=>{
+  const QUERY = `
+  {
+    user(login: "${user_name}") {
+      id
+      contributionsCollection {
+        totalCommitContributions
+      }
     }
   }
-}
-`;
-async function main() {
+  `;
   try {
     const {user:{contributionsCollection:{totalCommitContributions}}} = await graphql(QUERY);
     console.log(totalCommitContributions);
@@ -24,5 +24,4 @@ async function main() {
     console.error(err.message);
   }
 }
-
-main();
+exports.getCommitCount = getCommitCount;

@@ -31,7 +31,18 @@ router.get('/callback', async (req, res) => {
     });
     const access_token = (await seq.json()).access_token;
     req.session.access_token = access_token;
-    res.send("認証されました\naccess token: " + access_token);
+
+    const seq2 = await fetch(config.USER_URI, {
+        method: 'POST',
+        headers: {
+            Authorization: `token ${access_token}`
+        },
+    });
+    const user_name = (await seq2.json()).login;
+    req.session.user_name = user_name;
+    req.session.save();
+
+    res.send(`認証されました。アプリケーションページに移動してください。 <br> access token: ${access_token} <br> user_name: ${user_name}`);
 });
 
 exports.router = router;
