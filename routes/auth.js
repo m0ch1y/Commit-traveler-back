@@ -3,8 +3,17 @@ const fetch = require('node-fetch')
 const path = require('path');
 const qs = require('querystring')
 const router = express.Router();
+const mysql = require("mysql2");
 
 const config = require('../config')
+const connection = mysql.createConnection({
+    //hostはmysqlのコンテナ名を指定する
+    host: 'mysql-container',
+    user: 'root',
+    password: "root",
+    database: 'project',
+});
+
 
 router.get('/', (req, res) => {
     const params = qs.stringify({
@@ -38,9 +47,25 @@ router.get('/callback', async (req, res) => {
             Authorization: `token ${access_token}`
         },
     });
-    const user_name = (await seq2.json()).login;
+    const seq2_data = await seq2.json();
+    //user登録処理
+    const userId=seq2_data.id;
+    var exitUser= await connection.query("SELECT * FROM users where id=?",[userId]);
+    console.log(exitUser);
+    if(!exitUser){
+        console.log("初登録");
+        connection.connect((err)=>{
+            const currentTime="currentTime";
+            var registData=[requestUserId,seq2_data.name,currentTime,currentTime,0,1];
+            connection.query("INSERT INTO users VALUES(?,?,?,?,?,?)",registData);
+        })
+    }
+    else {
+        console.log("登録済み");
+    }
+    const user_name = seq2_data.login;
     req.session.user_name = user_name;
-    req.session.save();
+    req.session.id = seq2_data.id;
 
     res.send(`認証されました。アプリケーションページに移動してください。 <br> access token: ${access_token} <br> user_name: ${user_name}`);
 });
