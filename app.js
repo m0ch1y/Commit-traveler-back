@@ -6,6 +6,7 @@ const session = require('express-session');
 
 const config = require('./config');
 const routeAuth = require('./routes/auth');
+const routeApi = require('./routes/api');
 
 const app = express()
 app.use(bodyParser.urlencoded({
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 } }))
 //routing
 app.use("/auth", routeAuth.router);
+app.use("/api", routeApi.router);
 
 
 app.get('/test', async (req, res) => {
@@ -47,9 +49,8 @@ app.get("/testvue", (req, res) => {
   res.sendFile(__dirname + "/testvue.html");
 })
 
-app.get("/testvue", (req, res) => {
-  const pre_commit_count = 
-  res.send();
+app.get("/api/map", (req, res) => {
+
 })
 
 app.listen(3000, () => console.log('listening on port 3000'))
