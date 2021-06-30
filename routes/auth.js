@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
         client_id: config.CLIENT_ID,
         redirect_uri: config.REDIRECT_URI,
         response_type: 'code',
-        //scope: 'user',
+        scope: 'user',
         //state, 推測不能なランダムの文字列。 クロスサイトリクエストフォージェリ攻撃に対する保護として使われます。
     })
     res.redirect(302, `${config.AUTH_URI}?${params}`)
@@ -49,20 +49,26 @@ router.get('/callback', async (req, res) => {
     });
     const seq2_data = await seq2.json();
     //user登録処理
-    const userId=seq2_data.id;
-    var exitUser= await connection.query("SELECT * FROM users where id=?",[userId]);
-    console.log(exitUser);
-    if(!exitUser){
-        console.log("初登録");
-        connection.connect((err)=>{
-            const currentTime="currentTime";
-            var registData=[requestUserId,seq2_data.name,currentTime,currentTime,0,1];
-            connection.query("INSERT INTO users VALUES(?,?,?,?,?,?)",registData);
-        })
-    }
-    else {
-        console.log("登録済み");
-    }
+    const userId = seq2_data.id;
+    console.log(seq2_data);
+    console.log(userId);
+    connection.query(
+        "SELECT * FROM users where id=?", [userId],
+        (error, results) => {
+            console.log(results);
+            if (!results.length) {
+                console.log("初登録");
+                connection.connect((err) => {
+                    const currentTime = null;
+                    var registData = [userId, seq2_data.login, currentTime, currentTime, 0, 1];
+                    connection.query("INSERT INTO users VALUES(?,?,?,?,?,?)", registData);
+                })
+            }
+            else {
+                console.log("登録済み");
+            }
+        }
+    );
     const user_name = seq2_data.login;
     req.session.user_name = user_name;
     req.session.id = seq2_data.id;
