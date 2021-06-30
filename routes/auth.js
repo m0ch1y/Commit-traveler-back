@@ -51,13 +51,14 @@ router.get('/callback', async (req, res) => {
     //user登録処理
     const userId = seq2_data.id;
     connection.query(
-        "SELECT * FROM users where id=?", [userId],
+        "SELECT * FROM users where user_id = ?", [userId],
         (error, results) => {
             if (!results.length) {
                 console.log("初登録");
                 connection.connect((err) => {
-                    var registData = [userId, seq2_data.login, 0, 1];
-                    connection.query("INSERT INTO users(id, name, commit_count, location) VALUES(?,?,?,?)", registData);
+                    const node_id = 1;//ここにnodeidを書く
+                    var registData = [userId, seq2_data.login, 0, node_id, 0];
+                    connection.query("insert into users(user_id, name, commit_count, node_id, step) values(?,?,?,?,?); ", registData);
                 })
             }
             else {

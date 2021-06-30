@@ -8,7 +8,7 @@ const graphql = require('../graphql')
 
 const config = require('../config')
 
-router.get('/get-gyms', (req, res) => {
+router.get('/get-nodes', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
         return;
@@ -21,7 +21,7 @@ router.get('/get-gyms', (req, res) => {
         }
         console.log('success');
         connection.query(
-            `select * from gyms`,
+            `select * from nodes`,
             (error, results) => {
                 console.log(results);
                 res.send(results);
@@ -29,7 +29,7 @@ router.get('/get-gyms', (req, res) => {
         )
     });
 });
-router.get('/get-gym/:location', (req, res) => {
+router.get('/get-checkpoint/:node_id', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
         return;
@@ -42,7 +42,7 @@ router.get('/get-gym/:location', (req, res) => {
         }
         console.log('success');
         connection.query(
-            `select * from gym_ranking where location = ${req.params.location}`,
+            `select * from checkpoint_ranking where node_id= ?`,[req.params.node_id],
             (error, results) => {
                 console.log(results);
                 res.send(results);
@@ -50,7 +50,7 @@ router.get('/get-gym/:location', (req, res) => {
         )
     });
 });
-router.get('/update-user/:commit_count/:location', (req, res) => {
+router.get('/update-user/:commit_count/:node/:step', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
         return;
@@ -63,8 +63,9 @@ router.get('/update-user/:commit_count/:location', (req, res) => {
         }
         console.log('success');
         console.log(req.session.user_id);
+        const registData = [req.params.commit_count, req.params.node, req.params.step, req.session.user_id];
         connection.query(
-            `update users set commit_count = ${req.params.commit_count}, location = ${req.params.location} where id = ${req.session.user_id};`,
+            `update users set commit_count = ?, node_id = ?, step = ? where user_id = ?;`,registData,
             (error, results) => {
                 console.log(error);
                 res.send(results);
@@ -93,7 +94,7 @@ router.get('/get-user', (req, res) => {
         }
         console.log('success');
         connection.query(
-            `SELECT * FROM users where id = ${req.session.user_id};`,
+            `SELECT * FROM users where user_id = ${req.session.user_id};`,
             (error, results) => {
                 console.log(results);
                 res.send(results);
