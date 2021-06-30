@@ -50,18 +50,14 @@ router.get('/callback', async (req, res) => {
     const seq2_data = await seq2.json();
     //user登録処理
     const userId = seq2_data.id;
-    console.log(seq2_data);
-    console.log(userId);
     connection.query(
         "SELECT * FROM users where id=?", [userId],
         (error, results) => {
-            console.log(results);
             if (!results.length) {
                 console.log("初登録");
                 connection.connect((err) => {
-                    const currentTime = null;
-                    var registData = [userId, seq2_data.login, currentTime, currentTime, 0, 1];
-                    connection.query("INSERT INTO users VALUES(?,?,?,?,?,?)", registData);
+                    var registData = [userId, seq2_data.login, 0, 1];
+                    connection.query("INSERT INTO users(id, name, commit_count, location) VALUES(?,?,?,?)", registData);
                 })
             }
             else {
@@ -71,7 +67,7 @@ router.get('/callback', async (req, res) => {
     );
     const user_name = seq2_data.login;
     req.session.user_name = user_name;
-    req.session.id = seq2_data.id;
+    req.session.user_id = seq2_data.id;
 
     res.send(`認証されました。アプリケーションページに移動してください。 <br> access token: ${access_token} <br> user_name: ${user_name}`);
 });

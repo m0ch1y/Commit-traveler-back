@@ -4,33 +4,11 @@ const path = require('path');
 const qs = require('querystring')
 const router = express.Router();
 const mysql = require("mysql2");
+const graphql = require('../graphql')
 
 const config = require('../config')
 
-router.get('/gym/:position', (req, res) => {
-    console.log(req.session)
-    if (!req.session.access_token) {
-        res.redirect('/auth');
-        return;
-    }
-    connection.connect((err) => {
-        if (err) {
-            console.log('error connecting: ' + err.stack);
-            res.send(err.stack);
-            return;
-        }
-        console.log('success');
-        connection.query(
-            `select * from gym_ranking where id = ${req.query.position}`,
-            (error, results) => {
-                console.log(results);
-                res.send(results);
-            }
-        )
-    });
-});
-router.get('/gym/:position', (req, res) => {
-    console.log(req.session)
+router.get('/get-gyms', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
         return;
@@ -51,8 +29,7 @@ router.get('/gym/:position', (req, res) => {
         )
     });
 });
-router.get('/new-location', (req, res) => {
-    console.log(req.session)
+router.get('/get-gym/:location', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
         return;
@@ -65,7 +42,7 @@ router.get('/new-location', (req, res) => {
         }
         console.log('success');
         connection.query(
-            `update users set get_commit_count = 0, user_location = 0 where id = ${req.session.id};`,
+            `select * from gym_ranking where location = ${req.params.location}`,
             (error, results) => {
                 console.log(results);
                 res.send(results);
@@ -73,8 +50,37 @@ router.get('/new-location', (req, res) => {
         )
     });
 });
-router.get('/map', (req, res) => {
-    console.log(req.session)
+router.get('/update-user/:commit_count/:location', (req, res) => {
+    if (!req.session.access_token) {
+        res.redirect('/auth');
+        return;
+    }
+    connection.connect((err) => {
+        if (err) {
+            console.log('error connecting: ' + err.stack);
+            res.send(err.stack);
+            return;
+        }
+        console.log('success');
+        console.log(req.session.user_id);
+        connection.query(
+            `update users set commit_count = ${req.params.commit_count}, location = ${req.params.location} where id = ${req.session.user_id};`,
+            (error, results) => {
+                console.log(error);
+                res.send(results);
+            }
+        )
+    });
+});
+router.get('/get-commit', async (req, res) => {
+    if (!req.session.access_token) {
+        res.redirect('/auth');
+        return;
+    }
+    const ans = { commit: await graphql.getCommitCount(req.session.access_token, req.session.user_name) };
+    res.send(ans);
+});
+router.get('/get-user', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
         return;
@@ -87,7 +93,7 @@ router.get('/map', (req, res) => {
         }
         console.log('success');
         connection.query(
-            `SELECT * FROM users where id = ${req.session.id};`,
+            `SELECT * FROM users where id = ${req.session.user_id};`,
             (error, results) => {
                 console.log(results);
                 res.send(results);

@@ -29,14 +29,14 @@ app.get('/test', async (req, res) => {
   } else {
     res.send("nothing match");
   }
-  console.log(req.session);
 
 });
 app.get('/userinfo', async (req, res) => {
-  console.log(req.session)
   if (!req.session.access_token) {
+    console.log("セッションなし")
     res.redirect('/auth');
   } else {
+    console.log("access_token " + req.session.access_token);
     res.send("vue.jsのページ")
   }
 });
