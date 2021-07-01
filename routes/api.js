@@ -79,8 +79,22 @@ router.get('/get-commit', async (req, res) => {
         res.redirect('/auth');
         return;
     }
-    const ans = { commit: await graphql.getCommitCount(req.session.access_token, req.session.user_name) };
-    res.send(ans);
+    const ans = { all_commit: await graphql.getCommitCount(req.session.access_token, req.session.user_name) };
+    connection.query(
+        "select commit_count from users where user_id='?'", [req.session.user_id],
+        (error, results) => {
+            console.log(results);
+            if (results[0] == -1) {
+                connection.query("update users set commit_count=? where user_id=?", [ans.all_commit, req.session.user_id]);
+                ans.new_commit = 5;
+            }
+            else {
+                connection.query("update users set commit_count=? where user_id=?", [ans.all_commit, req.session.user_id]);
+                ans.new_commit = ans.all_commit - parseInt(results[0].commit_count);
+            }
+            res.send(ans);
+        }
+    )
 });
 router.get('/get-user', (req, res) => {
     if (!req.session.access_token) {
@@ -104,12 +118,12 @@ router.get('/get-user', (req, res) => {
     });
 });
 
+//本番環境では使わない。
 router.post('/update-map', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
         return;
     }
-    console.log(req.body);
     connection.query("DELETE FROM nodes;");
     req.body.forEach(function (node) {
         const mapdata = [node.id, node.type, node.type];
