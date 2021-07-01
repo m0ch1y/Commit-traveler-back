@@ -9,11 +9,29 @@ const routeAuth = require('./routes/auth');
 const routeApi = require('./routes/api');
 
 const app = express()
+const allowCrossDomain = function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+  res.header("Access-Control-Allow-Credentials", true);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, access_token"
+  );
+  // intercept OPTIONS method
+  if ("OPTIONS" === req.method) {
+    res.send(200);
+  } else {
+    next();
+  }
+};
+app.use(allowCrossDomain);
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 } }))
+app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 30000000 } }))
+app.use(express.static("dist"));
+
 //routing
 app.use("/auth", routeAuth.router);
 app.use("/api", routeApi.router);
@@ -41,9 +59,9 @@ app.get('/userinfo', async (req, res) => {
   }
 });
 
-app.use(express.static("dist"));
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/dist/index.html");
+
 })
 app.get("/testvue", (req, res) => {
   res.sendFile(__dirname + "/testvue.html");

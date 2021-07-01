@@ -71,6 +71,8 @@ router.get('/callback', async (req, res) => {
     req.session.user_id = seq2_data.id;
 
     res.send(`認証されました。アプリケーションページに移動してください。 <br> access token: ${access_token} <br> user_name: ${user_name}`);
+    //res.sendFile(__dirname + "/dist/index.html");
+    //res.redirect('/')
 });
 
 exports.router = router;

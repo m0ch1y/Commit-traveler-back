@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@octokit/graphql": "^4.6.4",
+    "cors": "^2.8.5",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
