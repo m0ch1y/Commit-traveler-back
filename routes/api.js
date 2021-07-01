@@ -56,6 +56,7 @@ router.get('/update-user/:commit_count/:node/:step', (req, res) => {
         res.redirect('/auth');
         return;
     }
+    console.log(req.params);
     connection.connect((err) => {
         if (err) {
             console.log('error connecting: ' + err.stack);
@@ -92,7 +93,6 @@ router.get('/get-commit', async (req, res) => {
                 //connection.query("update users set commit_count=? where user_id=?", [ans.all_commit, req.session.user_id]);
                 ans.new_commit = ans.all_commit - parseInt(results[0].commit_count);
             }
-
             res.send(ans);
         }
     )
