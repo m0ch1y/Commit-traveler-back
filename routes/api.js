@@ -110,9 +110,10 @@ router.post('/update-map', (req, res) => {
         return;
     }
     console.log(req.body);
+    connection.query("DELETE FROM nodes;");
     req.body.forEach(function (node) {
         const mapdata = [node.id, node.type, node.type];
-        connection.query("INSERT INTO nodes VALUES(?,?,?)", mapdata);
+        connection.query("INSERT INTO nodes VALUES(?,?,?);", mapdata);
     });
 });
 const connection = mysql.createConnection({
