@@ -89,9 +89,10 @@ router.get('/get-commit', async (req, res) => {
                 ans.new_commit = 5;
             }
             else {
-                connection.query("update users set commit_count=? where user_id=?", [ans.all_commit, req.session.user_id]);
+                //connection.query("update users set commit_count=? where user_id=?", [ans.all_commit, req.session.user_id]);
                 ans.new_commit = ans.all_commit - parseInt(results[0].commit_count);
             }
+
             res.send(ans);
         }
     )
