@@ -83,7 +83,6 @@ router.get('/get-commit', async (req, res) => {
     res.send(ans);
 });
 router.get('/get-user', (req, res) => {
-    console.log(req);
     if (!req.session.access_token) {
         res.redirect('/auth');
         return;
@@ -96,12 +95,24 @@ router.get('/get-user', (req, res) => {
         }
         console.log('success');
         connection.query(
-            `SELECT * FROM users where user_id = ${req.session.user_id};`,
+            `select * from users where user_id = ${req.session.user_id};`,
             (error, results) => {
                 console.log(results);
                 res.send(results);
             }
         )
+    });
+});
+
+router.post('/update-map', (req, res) => {
+    if (!req.session.access_token) {
+        res.redirect('/auth');
+        return;
+    }
+    console.log(req.body);
+    req.body.forEach(function (node) {
+        const mapdata = [node.id, node.type, node.type];
+        connection.query("INSERT INTO nodes VALUES(?,?,?)", mapdata);
     });
 });
 const connection = mysql.createConnection({
