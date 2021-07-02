@@ -51,6 +51,38 @@ router.get('/get-checkpoint/:node_id', (req, res) => {
         )
     });
 });
+
+router.get('/visit-checkpoint/:node_id/:commit_count/:comment', (req, res) => {
+    if (!req.session.access_token) {
+        res.redirect('/auth');
+        return;
+    }
+    console.log(req.params);
+    connection.connect((err) => {
+        if (err) {
+            console.log('error connecting: ' + err.stack);
+            res.send(err.stack);
+            return;
+        }
+        console.log('success');
+        console.log(req.session.user_id);
+        const registData = [
+            req.session.user_id,
+            req.params.node_id,
+            req.session.user_name,
+            req.params.commit_count,
+            req.params.comment,
+        ];
+        connection.query(
+            'insert into checkpoint_ranking(user_id,node_id,user_name,commit_count,comment) values(?,?,?,?,?);', registData,
+            (error, results) => {
+                console.log(error);
+                res.send(results);
+            }
+        )
+    });
+});
+
 router.get('/update-user/:commit_count/:node/:step', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
