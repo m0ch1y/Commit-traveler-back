@@ -98,8 +98,22 @@ const getCommitLanguage = async (token, user_name) => {
       console.error(err.message);
     }
   }
-  ans = Array.from(new Set(ans))
-  return ans;
+  return removeDuplicates(ans);
 }
+var removeDuplicates = function(object) {
+    var result = [], comparisons = [], key, comparison;
+ 
+    for (key in object) {
+        comparison = JSON.stringify(object[key]);
+ 
+        if (comparisons.indexOf(comparison) === -1) {
+            result.push(object[key]);
+        }
+ 
+        comparisons.push(comparison);
+    }
+ 
+    return result;
+};
 exports.getCommitCount = getCommitCount;
 exports.getCommitLanguage = getCommitLanguage;
