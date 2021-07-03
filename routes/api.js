@@ -137,6 +137,27 @@ router.get('/get-commit', async (req, res) => {
         }
     )
 });
+router.get('/get-reversi', (req, res) => {
+    connection.query("select * from reversi", (e,v) => {
+        res.send(JSON.parse(v[0].data));
+    });
+});
+router.get('/make-reversi', (req, res) => {
+    connection.query("drop table if exists reversi;");
+    connection.query("create table reversi (id int, data text);");
+    let grid = Array.from(new Array(8), () => new Array(8));
+    for (let i = 0; i < 8; i++){
+        for (let j = 0; j < 8; j++){
+            grid[i][j] = { name: "blank", "color": "#ffffff" };
+        }
+    }
+    grid[3][3] = { "name": "JavaScript", "color": "#f1e05a" };
+    grid[3][4] = { "name": "HTML", "color": "#e34c26" };
+    grid[4][3] = { "name": "C#", "color": "#178600" };
+    grid[4][4] = { "name": "C", "color": "#555555" };
+    connection.query("INSERT INTO reversi(id, data) values(?, ?);", [1, JSON.stringify(grid)]);
+    res.send("ok");
+});
 router.get('/get-user', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
