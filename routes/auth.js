@@ -20,7 +20,7 @@ router.get('/', (req, res) => {
         client_id: config.CLIENT_ID,
         redirect_uri: config.REDIRECT_URI,
         response_type: 'code',
-        scope: 'user',
+        scope: 'user, repo:status',
         //state, 推測不能なランダムの文字列。 クロスサイトリクエストフォージェリ攻撃に対する保護として使われます。
     })
     res.redirect(302, `${config.AUTH_URI}?${params}`)
