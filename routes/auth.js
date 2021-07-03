@@ -58,8 +58,7 @@ router.get('/callback', async (req, res) => {
                 console.log("初登録");
                 connection.query('select node_id from nodes where type="start";',
                     (error, results) => {
-                        console.log(results);
-                        const node_id = results[Math.floor(Math.random() * results.length)];//ここ不安...
+                        const {node_id} = results[Math.floor(Math.random() * results.length)];
                         var registData = [userId, seq2_data.login, -1, node_id, 0];//-1は仕様
                         connection.query("insert into users(user_id, name, commit_count, node_id, step) values(?,?,?,?,?); ", registData);
                     });
