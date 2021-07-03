@@ -7,6 +7,42 @@ graphql = graphql.defaults({
   },
 });
 */
+const ACCESS_TOKEN = "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";
+const getCommitRepos = async (token, user_name) => {
+  const QUERY = `
+{
+  user(login: "${user_name}") {
+    contributionsCollection {
+      commitContributionsByRepository(maxRepositories: 3) {
+        repository {
+          name
+          owner {
+            ... on User {
+              login
+            }
+          }
+        }
+      }
+    }
+  }
+}
+  `;
+  PARAMS = {
+    headers: {
+      authorization: `token ${token}`,
+    },
+  }
+  try {
+    const { user: { contributionsCollection: { commitContributionsByRepository: repos } } } = await graphql(QUERY, PARAMS);
+    ans = [];
+    for (let r of repos) {
+      ans.push({ name: r.repository.name, login: r.repository.owner.login });
+    }
+    return ans;
+  } catch (err) {
+    console.error(err.message);
+  }
+}
 const getCommitCount = async (token, user_name) => {
   const QUERY = `
   {
@@ -32,4 +68,38 @@ const getCommitCount = async (token, user_name) => {
     console.error(err.message);
   }
 }
+const getCommitLanguage = async (token, user_name) => {
+  let ans = [];
+  const repos = await getCommitRepos(token, user_name);
+  for (let r of repos) {
+
+    const QUERY = `
+{
+  repository(name: "${r.name}", owner: "${r.login}") {
+    languages(first: 3) {
+      nodes {
+        name
+        color
+      }
+    }
+  }
+}
+  `;
+    PARAMS = {
+      headers: {
+        authorization: `token ${token}`,
+      },
+    }
+    try {
+      //const { user: { contributionsCollection: { commitContributionsByRepository: repos} } } = await graphql(QUERY, PARAMS);
+      const { repository: { languages: { nodes } } } = await graphql(QUERY, PARAMS);
+      ans = ans.concat(nodes);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+  ans = Array.from(new Set(ans))
+  return ans;
+}
 exports.getCommitCount = getCommitCount;
+exports.getCommitLanguage = getCommitLanguage;
