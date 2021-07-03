@@ -8,8 +8,12 @@
   <body>
   <div class ="all">
     <h1 class="name">Commit traveler</h1>
-    <a class="start">start</a>
+    <a href=""style="text-decoration:none;" class="start">start</a>
   </div>
+   <p class="explain">・説明動画</p>
+   <iframe class="video" width="500" height="300" src="https://www.youtube.com/embed/WMIiPcgGC4Q?start=1" title="YouTube video player"
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>
   </body>
 </html>
  
@@ -23,6 +27,7 @@ body{
 .all{
   margin-top:110px;
   text-align:center;
+  height:280px;
 }
 
 .name{
@@ -40,8 +45,8 @@ body{
 
 }
 .start{
-  
-  font-size: 40px;
+  color:black;
+  font-size: 45px;
   font-family:"Franklin Gothic Medium";
   transition:all 0.7s;
 }
@@ -52,5 +57,16 @@ body{
 .start:active{
   position:relative;
   top:6px;
+}
+.video{
+  margin-left:345px;
+}
+.explain{
+  font-size:25px;
+  margin-left:340px;
+  margin-bottom:0px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color:rgb(37, 47, 138);
+  font-weight: 800;
 }
  </style>
