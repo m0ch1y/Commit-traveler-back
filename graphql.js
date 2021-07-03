@@ -41,6 +41,7 @@ const getCommitRepos = async (token, user_name) => {
     return ans;
   } catch (err) {
     console.error(err.message);
+    return [];
   }
 }
 const getCommitCount = async (token, user_name) => {
@@ -66,6 +67,7 @@ const getCommitCount = async (token, user_name) => {
     return totalCommitContributions;
   } catch (err) {
     console.error(err.message);
+    return [];
   }
 }
 const getCommitLanguage = async (token, user_name) => {
@@ -98,7 +100,11 @@ const getCommitLanguage = async (token, user_name) => {
       console.error(err.message);
     }
   }
-  return removeDuplicates(ans);
+  ans = removeDuplicates(ans);
+  for (let i = 0; i < ans.length; i++){
+    ans.color = ans.color ? ans.color : "#666";
+  }
+  return ans;
 }
 var removeDuplicates = function(object) {
     var result = [], comparisons = [], key, comparison;
