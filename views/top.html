@@ -29,8 +29,18 @@ body{
   color:rgb(255, 130, 100);
   font-family: fantasy;
   font-size:90px;
+  text-shadow:1px 1px 0 #FFF,
+              -1px -1px 0 #FFF,
+              -1px 1px 0 #FFF,
+              1px -1px 0 #FFF,
+              0px 1px 0 #FFF,
+              0-1px 0 #FFF,
+              -1px 0 0 #FFF, 
+              1px 0 0 #FFF;
+
 }
 .start{
+  
   font-size: 40px;
   font-family:"Franklin Gothic Medium";
   transition:all 0.7s;
@@ -38,5 +48,9 @@ body{
 
 .start:hover{
   color: rgba(255, 255, 255, 0.6);
+}
+.start:active{
+  position:relative;
+  top:6px;
 }
  </style>
