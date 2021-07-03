@@ -137,6 +137,16 @@ router.get('/get-commit', async (req, res) => {
         }
     )
 });
+router.post('/set-reversi', (req, res) => {
+    let json = Array.from(new Array(8), () => new Array(8));
+    for (let i = 0; i < req.body.length; i++) {
+        for (let j = 0; j < req.body[i].length; j++){
+            json[i][j] = { name: req.body[i][j].name, color: req.body[i][j].color };
+        }
+    }
+    connection.query("update reversi set data = ? where id = ?", [JSON.stringify(json), 1]);
+    res.send("ok");
+});
 router.get('/get-reversi', (req, res) => {
     connection.query("select * from reversi", (e,v) => {
         res.send(JSON.parse(v[0].data));
