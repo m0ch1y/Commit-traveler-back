@@ -107,6 +107,13 @@ router.get('/update-user/:commit_count/:node/:step', (req, res) => {
         )
     });
 });
+router.get('/get-langs', async (req, res) => {
+    if (!req.session.access_token) {
+        res.redirect('/auth');
+        return;
+    }
+    res.send(await graphql.getCommitLanguage(req.session.access_token, req.session.user_name));
+});
 router.get('/get-commit', async (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
