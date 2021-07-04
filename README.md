@@ -3,7 +3,7 @@
 - コミットをゲーム感覚で促進するサービス
 - 他のユーザーと交流することができる。
 - プログラミング言語でオセロができる（？）
-- node.js,vue.jsを使用。DBはMySQL,バックエンドのリポジトリ＝＞https://github.com/Kaito-design/Commit-traveler-back
+- node.js,vue.jsを使用。DBはMySQL,フロントエンドのリポジトリ＝＞https://github.com/saityyy/Commit-traveler-front
 
 ## ログイン
 githubアカウントを連携する。
