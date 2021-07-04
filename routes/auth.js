@@ -58,7 +58,7 @@ router.get('/callback', async (req, res) => {
                 console.log("初登録");
                 connection.query('select node_id from nodes where type="start";',
                     (error, results) => {
-                        const {node_id} = results[Math.floor(Math.random() * results.length)];
+                        const { node_id } = results[Math.floor(Math.random() * results.length)];
                         var registData = [userId, seq2_data.login, -1, node_id, 0];//-1は仕様
                         connection.query("insert into users(user_id, name, commit_count, node_id, step) values(?,?,?,?,?); ", registData);
                     });
@@ -72,9 +72,9 @@ router.get('/callback', async (req, res) => {
     req.session.user_name = user_name;
     req.session.user_id = seq2_data.id;
 
-    res.send(`認証されました。アプリケーションページに移動してください。 <br> access token: ${access_token} <br> user_name: ${user_name}`);
+    //res.send(`認証されました。アプリケーションページに移動してください。 <br> access token: ${access_token} <br> user_name: ${user_name}`);
     //res.sendFile(__dirname + "/dist/index.html");
-    //res.redirect('/')
+    res.redirect('/')
 });
 
 exports.router = router;

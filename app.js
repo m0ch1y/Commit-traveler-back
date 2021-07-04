@@ -31,6 +31,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 30000000 } }))
 app.use(express.static("dist"));
+app.use(express.static("static"));
 
 //routing
 app.use("/auth", routeAuth.router);
@@ -60,7 +61,12 @@ app.get('/userinfo', async (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/dist/index.html");
+  if (!req.session.access_token) {
+    res.sendFile(__dirname + "/static/top.html");
+  }
+  else {
+    res.sendFile(__dirname + "/dist/_index.html");
+  }
 
 })
 app.get("/testvue", (req, res) => {

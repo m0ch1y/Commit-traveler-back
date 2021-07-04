@@ -141,7 +141,7 @@ router.get('/get-commit', async (req, res) => {
 router.post('/set-reversi', (req, res) => {
     let json = Array.from(new Array(8), () => new Array(8));
     for (let i = 0; i < req.body.length; i++) {
-        for (let j = 0; j < req.body[i].length; j++){
+        for (let j = 0; j < req.body[i].length; j++) {
             json[i][j] = { name: req.body[i][j].name, color: req.body[i][j].color };
         }
     }
@@ -149,7 +149,7 @@ router.post('/set-reversi', (req, res) => {
     res.send("ok");
 });
 router.get('/get-reversi', (req, res) => {
-    connection.query("select * from reversi", (e,v) => {
+    connection.query("select * from reversi", (e, v) => {
         res.send(JSON.parse(v[0].data));
     });
 });
@@ -157,8 +157,8 @@ router.get('/update-db', (req, res) => {
     connection.query("drop table if exists reversi;");
     connection.query("create table reversi (id int, data text);");
     let grid = Array.from(new Array(8), () => new Array(8));
-    for (let i = 0; i < 8; i++){
-        for (let j = 0; j < 8; j++){
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
             grid[i][j] = { name: "blank", "color": "#ffffff" };
         }
     }
@@ -219,6 +219,30 @@ router.get('/get-user', (req, res) => {
             }
         )
     });
+});
+
+//未実装
+router.post('/fetch-ranking', (req, res) => {
+    if (!req.session.access_token) {
+        res.redirect('/auth');
+        return;
+    }
+    connection.query(
+        "select * from checkpoint_ranking where user_id=(select user_id from checkpoint_ranking", [req.session.user_id],
+        (error, results) => {
+            console.log(results);
+            if (results[0] == -1) {
+                connection.query("update users set commit_count=? where user_id=?", [ans.all_commit, req.session.user_id]);
+                ans.new_commit = 5;
+            }
+            else {
+                //connection.query("update users set commit_count=? where user_id=?", [ans.all_commit, req.session.user_id]);
+                ans.commit = ans.all_commit - parseInt(results[0].commit_count);
+                ans.table_commit = parseInt(results[0].commit_count);
+            }
+            res.send(ans);
+        }
+    )
 });
 
 //本番環境では使わない。
