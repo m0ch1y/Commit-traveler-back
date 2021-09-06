@@ -8,7 +8,7 @@ const mysql = require("mysql2");
 const config = require('../config')
 const connection = mysql.createConnection({
     //hostはmysqlのコンテナ名を指定する
-    host: 'mysql-container',
+    host: 'commit-traveler-db',
     user: 'root',
     password: "root",
     database: 'project',
