@@ -153,52 +153,6 @@ router.get('/get-reversi', (req, res) => {
         res.send(JSON.parse(v[0].data));
     });
 });
-router.get('/update-db', (req, res) => {
-    connection.query("drop table if exists reversi;");
-    connection.query("create table reversi (id int, data text);");
-    let grid = Array.from(new Array(8), () => new Array(8));
-    for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-            grid[i][j] = { name: "blank", "color": "#ffffff" };
-        }
-    }
-    grid[3][3] = { "name": "JavaScript", "color": "#f1e05a" };
-    grid[3][4] = { "name": "HTML", "color": "#e34c26" };
-    grid[4][3] = { "name": "C#", "color": "#178600" };
-    grid[4][4] = { "name": "C", "color": "#555555" };
-    connection.query("INSERT INTO reversi(id, data) values(?, ?);", [1, JSON.stringify(grid)]);
-
-    connection.query(`drop table if exists checkpoint_ranking;`);
-    connection.query(`drop table if exists nodes;`);
-    connection.query(`drop table if exists users;`);
-
-    connection.query(`create table checkpoint_ranking(
-    user_id text,
-    node_id int,
-    user_name text,
-    commit_count int,
-    comment text,
-    language text,
-    visit_at timestamp default current_timestamp on update current_timestamp);`);
-    connection.query(`create table nodes(
-    node_id int not null,
-    name text,
-    type text,
-    primary key(node_id));`);
-    connection.query(`create table users(
-    user_id text(30) not null,
-    name text,
-    commit_count int,
-    node_id int,
-    step int,
-    create_at timestamp default current_timestamp,
-    commit_at timestamp default current_timestamp on update current_timestamp,
-    primary key(user_id(30)));`);
-    connection.query(`insert into users(user_id, name, commit_count, node_id, step) values('4321','test-user',20, 3, 1); `);
-    connection.query(`insert into nodes(node_id, name, type) values('1234', 'test node', 'normal');`);
-    connection.query(`insert into checkpoint_ranking(user_id, node_id, user_name, commit_count, comment, language) values('4321', 1234, 'test-user', 20, 'Im test-user hello!', 'c++');`);
-    res.send("ok");
-});
 router.get('/get-user', (req, res) => {
     if (!req.session.access_token) {
         res.redirect('/auth');
