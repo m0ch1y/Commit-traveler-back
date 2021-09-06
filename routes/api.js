@@ -259,7 +259,7 @@ router.post('/update-map', (req, res) => {
 });
 const connection = mysql.createConnection({
     //hostはmysqlのコンテナ名を指定する
-    host: 'mysql-container',
+    host: 'commit-traveler-db',
     user: 'root',
     password: "root",
     database: 'project',
