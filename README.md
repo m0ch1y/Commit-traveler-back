@@ -1,5 +1,7 @@
 # Commit traveler
+[**Available on the Web**](https://commit-traveler.kajindowsxp.com)
 
+## Feature
 - コミットをゲーム感覚で促進するサービス
 - 他のユーザーと交流することができる。
 - プログラミング言語でオセロができる（？）
